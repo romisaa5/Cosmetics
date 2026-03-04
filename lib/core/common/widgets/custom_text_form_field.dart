@@ -1,5 +1,5 @@
+import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
-import 'package:cosmetics/core/theme/theme_manager/theme_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -9,7 +9,7 @@ class AppTextFormField extends StatelessWidget {
   final InputBorder? enabledBorder;
   final TextStyle? inputTextStyle;
   final TextStyle? hintStyle;
-  final String? hintText;
+  final String? labelText;
   final bool? isObscureText;
   final Widget? suffixIcon;
   final Color? backgroundColor;
@@ -32,7 +32,7 @@ class AppTextFormField extends StatelessWidget {
     this.enabledBorder,
     this.inputTextStyle,
     this.hintStyle,
-    this.hintText,
+    this.labelText,
     this.isObscureText,
     this.suffixIcon,
     this.backgroundColor,
@@ -57,7 +57,7 @@ class AppTextFormField extends StatelessWidget {
         ? UnderlineInputBorder(
             borderSide: BorderSide(
               color: isBorder
-                  ? context.customAppColors.grey400
+                  ? LightAppColors.grey600.withValues(alpha: .4)
                   : Colors.transparent,
               width: 1.w,
             ),
@@ -66,7 +66,7 @@ class AppTextFormField extends StatelessWidget {
             borderRadius: BorderRadius.circular(12.r),
             borderSide: BorderSide(
               color: isBorder
-                  ? context.customAppColors.grey400
+                  ? LightAppColors.grey600.withValues(alpha: .4)
                   : Colors.transparent,
               width: 1.w,
             ),
@@ -89,7 +89,7 @@ class AppTextFormField extends StatelessWidget {
               },
               focusNode: focusNode,
               obscureText: isObscureText ?? false,
-              cursorColor: context.customAppColors.primary800,
+              cursorColor: LightAppColors.primary800,
               decoration: InputDecoration(
                 isDense: true,
                 contentPadding:
@@ -100,7 +100,7 @@ class AppTextFormField extends StatelessWidget {
                     border.copyWith(
                       borderSide: BorderSide(
                         color: isBorder
-                            ? context.customAppColors.primary600
+                            ? LightAppColors.secondary800
                             : Colors.transparent,
                         width: 1.5.w,
                       ),
@@ -123,15 +123,15 @@ class AppTextFormField extends StatelessWidget {
                       ),
                     ),
 
-                hintText: hintText,
-                hintStyle:
+                labelText: labelText,
+                labelStyle:
                     hintStyle ??
                     AppTextStyles.font14Regular.copyWith(
-                      color: colorScheme.secondary.withValues(alpha: .5),
+                      color: LightAppColors.grey500,
                     ),
                 suffixIcon: suffixIcon,
                 prefixIcon: prefixIcon,
-                fillColor: backgroundColor ?? Colors.white,
+                fillColor: backgroundColor ?? LightAppColors.background,
                 filled: true,
               ),
               style:

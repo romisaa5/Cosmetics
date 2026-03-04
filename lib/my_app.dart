@@ -1,12 +1,7 @@
-import 'package:cosmetics/core/routing/app_router.dart';
+import 'package:cosmetics/features/onboarding/presentation/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'core/theme/theme_data/dark_them_data.dart';
-import 'core/theme/theme_data/light_theme_data.dart';
-import 'core/theme/theme_manager/theme_cubit.dart';
-import 'generated/l10n.dart';
+import 'core/theme/app_colors/light_theme_data.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -18,33 +13,10 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, child) {
-        return MultiBlocProvider(
-          providers: [BlocProvider(create: (_) => ThemeCubit())],
-          child: BlocBuilder<ThemeCubit, ThemeMode>(
-            builder: (context, newMode) {
-              return MaterialApp.router(
-                debugShowCheckedModeBanner: false,
-
-                // Set the app theme
-                theme: getLightTheme(context),
-                darkTheme: getDarkTheme(context),
-                themeMode: newMode,
-
-                // Add the localization delegates
-                localizationsDelegates: const [
-                  S.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                locale: const Locale('en'),
-                supportedLocales: S.delegate.supportedLocales,
-
-                // Set the initial route based on user authentication and role
-                routerConfig: AppRouter.router,
-              );
-            },
-          ),
+        return MaterialApp(
+          home: const SplashScreen(),
+          debugShowCheckedModeBanner: false,
+          theme: getLightTheme(context),
         );
       },
     );

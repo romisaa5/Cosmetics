@@ -1,6 +1,6 @@
 import 'package:cosmetics/core/helpers/extensions.dart';
+import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
-import 'package:cosmetics/core/theme/theme_manager/theme_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -45,15 +45,13 @@ class CustomButton extends StatelessWidget {
       onTap: isLoading ? null : onTap,
       child: Container(
         width: width ?? double.infinity,
-        height: hight ?? 56.h,
+        height: hight ?? 65.h,
         decoration: BoxDecoration(
           border: isborder
-              ? Border.all(
-                  color: borderColor ?? context.customAppColors.primary500,
-                )
+              ? Border.all(color: borderColor ?? LightAppColors.primary800)
               : null,
           borderRadius: BorderRadius.circular(border ?? 10.r),
-          color: color ?? context.customAppColors.primary500,
+          color: color ?? LightAppColors.secondary800,
         ),
         child: isLoading
             ? Center(

@@ -2,26 +2,26 @@ import 'package:flutter/material.dart';
 
 class LightAppColors {
   // ---------- Primary Palette ----------
-  static const Color primary100 = Color(0xFFD7E5F4);
-  static const Color primary200 = Color(0xFFAECBEA);
-  static const Color primary300 = Color(0xFF86B1DF);
-  static const Color primary400 = Color(0xFF5E97D4);
-  static const Color primary500 = Color(0xFF285E98);
-  static const Color primary600 = Color(0xFF2B64A1);
-  static const Color primary700 = Color(0xFF204B79);
-  static const Color primary800 = Color(0xFF153251);
-  static const Color primary900 = Color(0xFF0B1928);
+  static const Color primary100 = Color(0xFFE4E7F0);
+  static const Color primary200 = Color(0xFFC2C8DB);
+  static const Color primary300 = Color(0xFFA0A9C6);
+  static const Color primary400 = Color(0xFF7E8AB1);
+  static const Color primary500 = Color(0xFF65759F);
+  static const Color primary600 = Color(0xFF566488);
+  static const Color primary700 = Color(0xFF4C577A);
+  static const Color primary800 = Color(0xFF434C6D);
+  static const Color primary900 = Color(0xFF2F354C);
 
   // ---------- Secondary ----------
-  static const Color secondary100 = Color(0xFFEDE9DE);
-  static const Color secondary200 = Color(0xFFD8D2BD);
-  static const Color secondary300 = Color(0xFFC8BC9D);
-  static const Color secondary400 = Color(0xFFB6A67C);
-  static const Color secondary500 = Color(0xFFCDC2A5);
-  static const Color secondary600 = Color(0xFF837349);
-  static const Color secondary700 = Color(0xFF625837);
-  static const Color secondary800 = Color(0xFF423924);
-  static const Color secondary900 = Color(0xFF211D12);
+  static const Color secondary100 = Color(0xFFFCE6EA);
+  static const Color secondary200 = Color(0xFFF7C2CB);
+  static const Color secondary300 = Color(0xFFF19EAD);
+  static const Color secondary400 = Color(0xFFEB7A8E);
+  static const Color secondary500 = Color(0xFFE3657B);
+  static const Color secondary600 = Color(0xFFDC5F76);
+  static const Color secondary700 = Color(0xFFD85E73);
+  static const Color secondary800 = Color(0xFFD75D72);
+  static const Color secondary900 = Color(0xFFB5485B);
 
   // ---------- Neutral ----------
   static const Color neutral900 = Color(0xFF1A1A1A);
@@ -38,8 +38,8 @@ class LightAppColors {
   static const Color grey900 = Color(0xFF011308);
   static const Color grey800 = Color(0xFF424242);
   static const Color grey700 = Color(0xFF616161);
-  static const Color grey600 = Color(0xFF757575);
-  static const Color grey500 = Color(0xFF9E9E9E);
+  static const Color grey600 = Color(0xFF5A6690);
+  static const Color grey500 = Color(0xFF8E8EA9);
   static const Color grey400 = Color(0xFFBDBDBD);
   static const Color grey300 = Color(0xFFE0E0E0);
   static const Color grey200 = Color(0xFFEEEEEE);
@@ -48,7 +48,7 @@ class LightAppColors {
   static const Color grey0 = Color(0xFFFFFFFF);
 
   // ---------- Neutral ----------
-  static const Color background = Color(0xFFFAFAFA);
+  static const Color background = Color(0xFFD9D9D9);
   static const Color black = Color(0xFF000000);
   static const Color white = Color(0xFFFFFFFF);
 
