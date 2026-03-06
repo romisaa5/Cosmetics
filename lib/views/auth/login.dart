@@ -11,7 +11,7 @@ import 'package:cosmetics/core/utils/common_imports.dart';
 import 'package:cosmetics/views/auth/forget_password.dart';
 import 'package:cosmetics/views/auth/register.dart';
 import 'package:cosmetics/views/auth/widgets/auth_switcher_text.dart';
-import 'package:cosmetics/views/nav_bar.dart';
+import 'package:cosmetics/views/home/nav_bar.dart';
 import 'package:flutter/cupertino.dart';
 
 class LoginView extends StatefulWidget {

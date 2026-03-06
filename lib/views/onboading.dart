@@ -7,7 +7,7 @@ import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
 import 'package:cosmetics/views/auth/login.dart';
-import 'package:cosmetics/views/models/onboarding.dart';
+import 'package:cosmetics/views/onboarding_model.dart';
 import 'package:flutter/cupertino.dart';
 
 class OnboardingScreen extends StatefulWidget {
