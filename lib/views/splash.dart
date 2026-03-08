@@ -3,16 +3,16 @@ import 'package:cosmetics/core/common/widgets/app_images.dart';
 import 'package:cosmetics/core/helpers/app_navigator.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
-import 'package:cosmetics/views/onboading.dart';
+import 'package:cosmetics/views/on_boarding.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+class SplashView extends StatefulWidget {
+  const SplashView({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<SplashView> createState() => _SplashViewState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _navigateToHome() {
     Future.delayed(const Duration(seconds: 5), () {
-      AppNavigator.pushAndRemoveUntil(context, OnboardingScreen());
+      AppNavigator.pushAndRemoveUntil(context, OnBoardingView());
     });
   }
 

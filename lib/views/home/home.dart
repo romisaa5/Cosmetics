@@ -6,8 +6,8 @@ import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
 import 'package:cosmetics/views/home/widgets/top_rated_product_card.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {

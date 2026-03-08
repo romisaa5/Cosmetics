@@ -9,11 +9,13 @@ import 'package:flutter/cupertino.dart';
 class AppPhoneInput extends StatefulWidget {
   final TextEditingController phoneController;
   final Function(String completePhone)? onChanged;
+  final String? Function(String?)? validator;
 
   const AppPhoneInput({
     super.key,
     required this.phoneController,
     this.onChanged,
+    this.validator,
   });
 
   @override
@@ -114,6 +116,7 @@ class _AppPhoneInputState extends State<AppPhoneInput> {
             onChanged: (_) => _updateFullNumber(),
             labelText: 'Phone Number',
             controller: widget.phoneController,
+            validator: widget.validator,
           ),
         ),
       ],

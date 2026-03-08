@@ -35,7 +35,7 @@ class AppButton extends StatelessWidget {
   final TextStyle? style;
   final double? border;
   final String? icon;
-  final Color? iconColor;
+  final ColorFilter? iconColor;
   final Color? borderColor;
   final bool isLoading;
 
@@ -68,7 +68,10 @@ class AppButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (isIcon == true) ...[AppImages(imagePath: icon!), 8.w.pw],
+                  if (isIcon == true) ...[
+                    AppImages(imagePath: icon!, colorFilter: iconColor),
+                    8.w.pw,
+                  ],
                   Text(
                     text,
                     style:

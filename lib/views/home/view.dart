@@ -7,21 +7,21 @@ import 'package:cosmetics/views/home/home.dart';
 import 'package:cosmetics/views/home/profile.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
-class NavBar extends StatefulWidget {
-  const NavBar({super.key});
+class View extends StatefulWidget {
+  const View({super.key});
 
   @override
-  State<NavBar> createState() => _NavBarState();
+  State<View> createState() => _ViewState();
 }
 
-class _NavBarState extends State<NavBar> {
+class _ViewState extends State<View> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    const HomeScreen(),
-    const CategoriesScreen(),
-    const MyCartScreen(),
-    const ProfileScreen(),
+  final _pages = [
+    const HomePage(),
+    const CategoriesPage(),
+    const MyCartPage(),
+    const ProfilePage(),
   ];
 
   Widget buildSvg(String path, bool isSelected) {

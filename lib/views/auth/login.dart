@@ -7,12 +7,12 @@ import 'package:cosmetics/core/helpers/app_validators.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
-import 'package:cosmetics/core/utils/common_imports.dart';
+import 'package:cosmetics/core/utils/common_imports.dart' hide View;
 import 'package:cosmetics/views/auth/forget_password.dart';
 import 'package:cosmetics/views/auth/register.dart';
 import 'package:cosmetics/views/auth/widgets/auth_switcher_text.dart';
-import 'package:cosmetics/views/home/nav_bar.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cosmetics/views/home/view.dart';
+import 'package:flutter/cupertino.dart' hide View;
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -66,7 +66,10 @@ class _LoginViewState extends State<LoginView> {
                           ),
                         ),
                         40.h.ph,
-                        AppPhoneInput(phoneController: phoneController),
+                        AppPhoneInput(
+                          phoneController: phoneController,
+                          validator: AppValidators.phone,
+                        ),
                         8.h.ph,
                         AppInput(
                           labelText: 'Create your password',
@@ -105,7 +108,9 @@ class _LoginViewState extends State<LoginView> {
                           text: 'Login',
                           width: 270.w,
                           onTap: () {
-                            AppNavigator.pushAndRemoveUntil(context, NavBar());
+                            if (formKey.currentState!.validate()) {
+                              AppNavigator.pushAndRemoveUntil(context, View());
+                            }
                           },
                         ),
                         Spacer(),

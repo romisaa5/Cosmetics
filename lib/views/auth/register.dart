@@ -80,7 +80,10 @@ class _RegisterViewState extends State<RegisterView> {
                           validator: AppValidators.email,
                         ),
                         38.h.ph,
-                        AppPhoneInput(phoneController: phoneController),
+                        AppPhoneInput(
+                          phoneController: phoneController,
+                          validator: AppValidators.phone,
+                        ),
                         16.h.ph,
                         AppInput(
                           labelText: 'Create your password',
@@ -126,23 +129,25 @@ class _RegisterViewState extends State<RegisterView> {
                         16.h.ph,
                         AppButton(
                           onTap: () {
-                            AppNavigator.push(
-                              context,
-                              VerifyCodeView(
-                                contact: 'your email amramer522@gmail.com',
-                                onTap: () => showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AccountActivatedDialog(
-                                      title: 'Account Activated!',
-                                      subTitle:
-                                          'Congratulations! Your account has been successfully activated',
-                                      buttonTitle: 'Go to home',
-                                    );
-                                  },
+                            if (formKey.currentState!.validate()) {
+                              AppNavigator.push(
+                                context,
+                                VerifyCodeView(
+                                  contact: 'your email amramer522@gmail.com',
+                                  onTap: () => showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AccountActivatedDialog(
+                                        title: 'Account Activated!',
+                                        subTitle:
+                                            'Congratulations! Your account has been successfully activated',
+                                        buttonTitle: 'Go to home',
+                                      );
+                                    },
+                                  ),
                                 ),
-                              ),
-                            );
+                              );
+                            }
                           },
                           text: 'Next',
                           width: 270.w,

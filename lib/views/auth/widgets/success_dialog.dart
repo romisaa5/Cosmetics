@@ -11,10 +11,12 @@ class AccountActivatedDialog extends StatelessWidget {
     required this.title,
     required this.subTitle,
     required this.buttonTitle,
+    this.onTap,
   });
   final String title;
   final String subTitle;
   final String buttonTitle;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +46,7 @@ class AccountActivatedDialog extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 25.h),
-            AppButton(
-              text: buttonTitle,
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
+            AppButton(text: buttonTitle, onTap: onTap),
           ],
         ),
       ),

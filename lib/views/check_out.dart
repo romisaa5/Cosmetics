@@ -5,14 +5,11 @@ import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
 
-class CheckOutScreen extends StatelessWidget {
-  const CheckOutScreen({super.key});
+class CheckOutView extends StatelessWidget {
+  const CheckOutView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -22,33 +19,33 @@ class CheckOutScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildHeader(context),
-              SizedBox(height: screenHeight * 0.02),
+              10.h.ph,
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
+                padding: EdgeInsets.symmetric(horizontal: 12.w),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildSectionTitle('Delivery to'),
-                    SizedBox(height: screenHeight * 0.015),
+                    10.h.ph,
                     _buildSelectionCard(
                       icon: Icons.location_on_outlined,
                       title: 'Home',
                       subtitle: 'Mansoura, 14 Forsaid St',
                       showDropdown: true,
                     ),
-                    SizedBox(height: screenHeight * 0.03),
+                    20.h.ph,
                     _buildSectionTitle('Payment Method'),
-                    SizedBox(height: screenHeight * 0.02),
+                    10.h.ph,
                     _buildPaymentCard(),
-                    SizedBox(height: screenHeight * 0.02),
+                    10.h.ph,
                     _buildVoucherInput(),
-                    SizedBox(height: screenHeight * 0.03),
+                    20.h.ph,
                     _buildReviewPaymentLabel(),
-                    SizedBox(height: screenHeight * 0.02),
-                    _buildPaymentSummary(screenHeight, screenWidth),
-                    SizedBox(height: screenHeight * 0.05),
-                    _buildOrderButton(screenWidth),
-                    SizedBox(height: screenHeight * 0.02),
+                    20.h.ph,
+                    _buildPaymentSummary(),
+                    35.h.ph,
+                    _buildOrderButton(),
+                    10.h.ph,
                   ],
                 ),
               ),
@@ -218,12 +215,9 @@ class CheckOutScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPaymentSummary(double screenHeight, double screenWidth) {
+  Widget _buildPaymentSummary() {
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: screenWidth * 0.04,
-        vertical: screenHeight * 0.015,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 12.w),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,16 +228,12 @@ class CheckOutScreen extends StatelessWidget {
               color: LightAppColors.primary800,
             ),
           ),
-          SizedBox(height: screenHeight * 0.01),
+          10.h.ph,
           _buildSummaryRow('Subtotal', '16,100 EGP'),
           10.h.ph,
           _buildSummaryRow('SHIPPING FEES', 'TO BE CALCULATED'),
           10.h.ph,
-          Divider(
-            color: const Color(0xFF73B9BB),
-            thickness: 1,
-            height: screenHeight * 0.02,
-          ),
+          Divider(color: const Color(0xFF73B9BB), thickness: 1),
           10.h.ph,
           _buildSummaryRow('TOTAL + VAT', '16,100 EGP', isBold: true),
         ],
@@ -280,7 +270,12 @@ class CheckOutScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildOrderButton(double screenWidth) {
-    return AppButton(icon: '/my_cart.svg', text: 'ORDER', isIcon: true);
+  Widget _buildOrderButton() {
+    return AppButton(
+      icon: '/my_cart.svg',
+      text: 'ORDER',
+      isIcon: true,
+      iconColor: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+    );
   }
 }

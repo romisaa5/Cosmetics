@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (_, child) {
         return MaterialApp(
-          home: const SplashScreen(),
+          home: const SplashView(),
           debugShowCheckedModeBanner: false,
           theme: getLightTheme(context),
         );

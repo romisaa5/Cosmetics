@@ -7,34 +7,33 @@ import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
 import 'package:cosmetics/views/auth/login.dart';
-import 'package:cosmetics/views/onboarding_model.dart';
 import 'package:flutter/cupertino.dart';
 
-class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+class OnBoardingView extends StatefulWidget {
+  const OnBoardingView({super.key});
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  State<OnBoardingView> createState() => _OnBoardingViewState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
-  final PageController _controller = PageController();
+class _OnBoardingViewState extends State<OnBoardingView> {
+  final _controller = PageController();
   int currentIndex = 0;
 
-  final List<OnboardingModel> pages = [
-    OnboardingModel(
+  final pages = [
+    _OnBoarding(
       image: '/on_boarding1.png',
       title: "WELCOME!",
       description:
           "Makeup has the power to transform your mood and empowers you to be a more confident person.",
     ),
-    OnboardingModel(
+    _OnBoarding(
       image: '/on_boarding2.png',
       title: "SEARCH & PICK",
       description:
           "We have dedicated set of products and routines hand picked for every skin type.",
     ),
-    OnboardingModel(
+    _OnBoarding(
       image: '/on_boarding3.png',
       title: "PUSH NOTIFICATIONS",
       description: "Allow notifications for new makeup & cosmetics offers.",
@@ -149,4 +148,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       ),
     );
   }
+}
+
+class _OnBoarding {
+  final String image;
+  final String title;
+  final String description;
+
+  _OnBoarding({
+    required this.image,
+    required this.title,
+    required this.description,
+  });
 }

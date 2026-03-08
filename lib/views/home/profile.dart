@@ -4,8 +4,8 @@ import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -132,11 +132,7 @@ class ProfileItem extends StatelessWidget {
                   ),
                 ),
               ),
-              Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: LightAppColors.primary800,
-              ),
+              AppImages(imagePath: '/forward.svg'),
             ],
           ),
         ),
