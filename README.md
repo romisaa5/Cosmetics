@@ -46,7 +46,11 @@
 
 ## 📸 App Demo
 
+<div align="center">
 
+https://github.com/user-attachments/assets/60082ac2-a19a-4315-a929-5ba19d5bb353
+
+</div>
 
 ---
 
