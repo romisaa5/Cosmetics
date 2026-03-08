@@ -1,9 +1,9 @@
+import 'package:cosmetics/core/common/widgets/app_images.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class AppButton extends StatelessWidget {
   const AppButton({
@@ -68,7 +68,7 @@ class AppButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (isIcon == true) ...[SvgPicture.asset(icon!), 8.w.pw],
+                  if (isIcon == true) ...[AppImages(imagePath: icon!), 8.w.pw],
                   Text(
                     text,
                     style:

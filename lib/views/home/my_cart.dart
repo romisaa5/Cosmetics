@@ -1,10 +1,13 @@
 import 'package:cosmetics/core/common/widgets/app_images.dart';
+import 'package:cosmetics/core/helpers/app_navigator.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
+import 'package:cosmetics/views/check_out.dart';
 import 'package:cosmetics/views/products_model.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
 import 'package:cosmetics/views/home/widgets/my_cart_product_card.dart';
+import 'package:flutter/cupertino.dart';
 
 class MyCartScreen extends StatelessWidget {
   const MyCartScreen({super.key});
@@ -60,7 +63,12 @@ class MyCartScreen extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              AppImages(imagePath: '/add_cart.svg'),
+              CupertinoButton(
+                onPressed: () {
+                  AppNavigator.push(context, CheckOutScreen());
+                },
+                child: AppImages(imagePath: '/add_cart.svg'),
+              ),
             ],
           ),
           24.h.ph,
