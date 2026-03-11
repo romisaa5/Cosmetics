@@ -28,6 +28,7 @@ class _MyCartPageState extends State<MyCartPage> {
   Future<void> fetchCartItems() async {
     try {
       final response = await DioHelper.get("/api/Cart");
+
       setState(() {
         cart = CartModel.fromJson(response.data);
         isLoading = false;
@@ -69,6 +70,7 @@ class _MyCartPageState extends State<MyCartPage> {
             ],
           ),
           24.h.ph,
+
           Expanded(
             child: isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -77,10 +79,24 @@ class _MyCartPageState extends State<MyCartPage> {
                     itemBuilder: (context, index) {
                       final product = cart!.items[index];
 
-                      return MyCartProductCard(model: product, onDelete: () {});
+                      return MyCartProductCard(
+                        model: product,
+                        onCartUpdated: fetchCartItems,
+                      );
                     },
                   ),
           ),
+
+          if (cart != null)
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 12.h),
+              child: Text(
+                "Total: ${cart!.total.toStringAsFixed(0)} EGP",
+                style: AppTextStyles.font16SemiBold.copyWith(
+                  color: LightAppColors.primary800,
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -90,12 +106,14 @@ class _MyCartPageState extends State<MyCartPage> {
 class MyCartProductCard extends StatefulWidget {
   const MyCartProductCard({
     super.key,
-    required this.onDelete,
+
     required this.model,
+    required this.onCartUpdated,
   });
 
   final CartItemModel model;
-  final VoidCallback onDelete;
+
+  final VoidCallback onCartUpdated;
 
   @override
   State<MyCartProductCard> createState() => _MyCartProductCardState();
@@ -103,6 +121,7 @@ class MyCartProductCard extends StatefulWidget {
 
 class _MyCartProductCardState extends State<MyCartProductCard> {
   late int quantity;
+  bool isUpdating = false;
 
   @override
   void initState() {
@@ -110,17 +129,63 @@ class _MyCartProductCardState extends State<MyCartProductCard> {
     quantity = widget.model.quantity;
   }
 
-  void addQuantity() {
-    setState(() {
-      quantity++;
-    });
+  Future<void> removeItem() async {
+    try {
+      await DioHelper.delete("/api/Cart/remove/${widget.model.productId}");
+
+      widget.onCartUpdated();
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Error removing item")));
+    }
   }
 
-  void removeQuantity() {
-    if (quantity > 1) {
+  Future<void> updateCart(int newQuantity) async {
+    try {
       setState(() {
-        quantity--;
+        isUpdating = true;
       });
+
+      await DioHelper.put(
+        "/api/Cart/update",
+        queryParameters: {
+          "productId": widget.model.productId,
+          "quantity": newQuantity,
+        },
+      );
+
+      widget.onCartUpdated();
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Error updating cart")));
+    } finally {
+      setState(() {
+        isUpdating = false;
+      });
+    }
+  }
+
+  void addQuantity() async {
+    final newQuantity = quantity + 1;
+
+    setState(() {
+      quantity = newQuantity;
+    });
+
+    await updateCart(newQuantity);
+  }
+
+  void removeQuantity() async {
+    if (quantity > 1) {
+      final newQuantity = quantity - 1;
+
+      setState(() {
+        quantity = newQuantity;
+      });
+
+      await updateCart(newQuantity);
     }
   }
 
@@ -145,9 +210,9 @@ class _MyCartProductCardState extends State<MyCartProductCard> {
                   left: 4,
                   top: 4,
                   child: GestureDetector(
-                    onTap: widget.onDelete,
+                    onTap: removeItem,
                     child: Container(
-                      padding: EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(6.r),
@@ -178,17 +243,6 @@ class _MyCartProductCardState extends State<MyCartProductCard> {
                     overflow: TextOverflow.ellipsis,
                   ),
 
-                  4.h.ph,
-
-                  Text(
-                    widget.model.productName,
-                    style: AppTextStyles.font14Regular.copyWith(
-                      color: LightAppColors.grey700,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-
                   8.h.ph,
 
                   Text(
@@ -200,6 +254,7 @@ class _MyCartProductCardState extends State<MyCartProductCard> {
                 ],
               ),
             ),
+
             Container(
               padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
               decoration: BoxDecoration(
@@ -209,7 +264,7 @@ class _MyCartProductCardState extends State<MyCartProductCard> {
               child: Row(
                 children: [
                   GestureDetector(
-                    onTap: removeQuantity,
+                    onTap: isUpdating ? null : removeQuantity,
                     child: Icon(
                       Icons.remove,
                       size: 18,
@@ -225,7 +280,7 @@ class _MyCartProductCardState extends State<MyCartProductCard> {
                   ),
                   10.w.pw,
                   GestureDetector(
-                    onTap: addQuantity,
+                    onTap: isUpdating ? null : addQuantity,
                     child: Icon(
                       Icons.add,
                       size: 18,
@@ -237,7 +292,9 @@ class _MyCartProductCardState extends State<MyCartProductCard> {
             ),
           ],
         ),
+
         14.h.ph,
+
         Divider(
           thickness: 1,
           color: LightAppColors.grey500.withValues(alpha: .5),
@@ -262,10 +319,6 @@ class CartModel {
           .toList(),
       total: (json['total'] as num).toDouble(),
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'items': items.map((e) => e.toJson()).toList(), 'total': total};
   }
 }
 
@@ -292,15 +345,5 @@ class CartItemModel {
       price: (json['price'] as num).toDouble(),
       imageUrl: json['imageUrl'],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'productId': productId,
-      'productName': productName,
-      'quantity': quantity,
-      'price': price,
-      'imageUrl': imageUrl,
-    };
   }
 }
