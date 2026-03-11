@@ -227,9 +227,7 @@ class _MyCartProductCardState extends State<MyCartProductCard> {
                 ),
               ],
             ),
-
             12.w.pw,
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,13 +1,27 @@
 import 'package:cosmetics/core/common/widgets/app_images.dart';
 import 'package:cosmetics/core/helpers/app_navigator.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
+import 'package:cosmetics/core/network/dio_helper.dart';
+import 'package:cosmetics/core/network/token_storage.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
+import 'package:cosmetics/views/auth/login.dart';
 import 'package:cosmetics/views/home/account.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
+  Future<void> logout(BuildContext context) async {
+    try {
+      await DioHelper.post("/api/Auth/logout");
+      await TokenStorage.deleteToken();
+      AppNavigator.pushAndRemoveUntil(context, const LoginView());
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Error logging out")));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,17 +99,20 @@ class ProfilePage extends StatelessWidget {
               ),
               ProfileItem(icon: '/voucher.svg', title: "Voucher", onTap: () {}),
               20.h.ph,
-              Row(
-                children: [
-                  AppImages(imagePath: '/logout.svg', width: 20.w),
-                  8.w.pw,
-                  Text(
-                    "Logout",
-                    style: AppTextStyles.font14SemiBold.copyWith(
-                      color: Colors.red,
+              InkWell(
+                onTap: () => logout(context),
+                child: Row(
+                  children: [
+                    AppImages(imagePath: '/logout.svg', width: 20.w),
+                    8.w.pw,
+                    Text(
+                      "Logout",
+                      style: AppTextStyles.font14SemiBold.copyWith(
+                        color: Colors.red,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
