@@ -1,10 +1,11 @@
 import 'package:cosmetics/core/common/widgets/app_input.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
+import 'package:cosmetics/core/logic/models/country.dart';
+import 'package:cosmetics/core/logic/services/country_service.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
-import 'package:country_picker/country_picker.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class AppPhoneInput extends StatefulWidget {
   final TextEditingController phoneController;
@@ -23,10 +24,27 @@ class AppPhoneInput extends StatefulWidget {
 }
 
 class _AppPhoneInputState extends State<AppPhoneInput> {
-  String countryCode = "+20";
+  final countryNotifier = ValueNotifier<String>("+20");
+  List<Country> countries = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadCountries();
+  }
+
+  Future<void> loadCountries() async {
+    await CountryService().fetchCountries();
+    if (CountryService().countries.isNotEmpty) {
+      countryNotifier.value = CountryService().countries.first.code;
+    }
+    setState(() {
+      countries = CountryService().countries;
+    });
+  }
 
   void _updateFullNumber() {
-    final fullNumber = "$countryCode${widget.phoneController.text}";
+    final fullNumber = "${countryNotifier.value}${widget.phoneController.text}";
     widget.onChanged?.call(fullNumber);
   }
 
@@ -34,85 +52,77 @@ class _AppPhoneInputState extends State<AppPhoneInput> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        GestureDetector(
-          onTap: () {
-            showCountryPicker(
-              context: context,
-              showPhoneCode: true,
-              onSelect: (Country country) {
-                setState(() {
-                  countryCode = "+${country.phoneCode}";
-                });
-                _updateFullNumber();
-              },
-              countryListTheme: CountryListThemeData(
-                flagSize: 24.sp,
-                backgroundColor: Colors.white,
-                textStyle: TextStyle(
-                  fontSize: 16.sp,
-                  color: LightAppColors.grey900,
-                ),
-                bottomSheetHeight: 500.h,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
-                searchTextStyle: TextStyle(
-                  fontSize: 16.sp,
-                  color: LightAppColors.grey600,
-                ),
-                inputDecoration: InputDecoration(
-                  hintText: 'Search country',
-                  hintStyle: TextStyle(
-                    fontSize: 14.sp,
-                    color: LightAppColors.grey500,
-                  ),
-                  prefixIcon: Icon(
-                    CupertinoIcons.search,
-                    color: LightAppColors.grey500,
-                  ),
-                  filled: true,
-                  fillColor: LightAppColors.background,
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: 12.h,
-                    horizontal: 16.w,
-                  ),
-                  border: OutlineInputBorder(
+        Container(
+          width: 120.w,
+          height: 55.h,
+          decoration: BoxDecoration(
+            color: LightAppColors.background,
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(color: LightAppColors.grey500),
+          ),
+          child: ValueListenableBuilder<String>(
+            valueListenable: countryNotifier,
+            builder: (context, value, child) {
+              return DropdownButton2<String>(
+                isExpanded: true,
+                valueListenable: countryNotifier,
+
+                dropdownStyleData: DropdownStyleData(
+                  maxHeight: 300.h,
+                  width: 250.w,
+                  decoration: BoxDecoration(
+                    color: LightAppColors.background,
                     borderRadius: BorderRadius.circular(12.r),
-                    borderSide: BorderSide.none,
+                  ),
+                  elevation: 8,
+                  scrollbarTheme: ScrollbarThemeData(
+                    thumbColor: WidgetStateProperty.all(LightAppColors.grey500),
+                    radius: Radius.circular(8.r),
+                    thickness: WidgetStateProperty.all(5),
                   ),
                 ),
-              ),
-            );
-          },
-          child: Container(
-            width: 90.w,
-            padding: EdgeInsets.symmetric(vertical: 14.h),
-            decoration: BoxDecoration(
-              color: LightAppColors.background,
-              borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(color: LightAppColors.grey500),
-            ),
-            alignment: Alignment.center,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  countryCode,
-                  style: AppTextStyles.font14Regular.copyWith(
-                    color: LightAppColors.grey600,
-                  ),
-                ),
-                5.w.pw,
-                Icon(
-                  CupertinoIcons.chevron_down,
-                  size: 16.sp,
-                  color: LightAppColors.grey600,
-                ),
-              ],
-            ),
+                items: countries
+                    .map(
+                      (c) => DropdownItem<String>(
+                        value: c.code,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Text(
+                                c.name,
+                                style: AppTextStyles.font14Regular.copyWith(
+                                  color: LightAppColors.grey600,
+                                ),
+                              ),
+                              Spacer(),
+                              Text(
+                                c.code,
+                                style: AppTextStyles.font14Regular.copyWith(
+                                  color: LightAppColors.grey600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (val) {
+                  if (val == null) return;
+                  countryNotifier.value = val;
+                  _updateFullNumber();
+                },
+                underline: Container(),
+              );
+            },
           ),
         ),
+
         10.w.pw,
         Expanded(
           child: AppInput(
+            keyboardType: TextInputType.number,
             onChanged: (_) => _updateFullNumber(),
             labelText: 'Phone Number',
             controller: widget.phoneController,
