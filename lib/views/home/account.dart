@@ -1,6 +1,8 @@
 import 'package:cosmetics/core/common/widgets/app_button.dart';
+import 'package:cosmetics/core/common/widgets/app_images.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
 import 'package:cosmetics/core/network/dio_helper.dart';
+import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
 import 'package:cosmetics/views/home/edit_account.dart';
 
@@ -40,41 +42,56 @@ class _ProfileViewState extends State<AccountView> {
   Widget build(BuildContext context) {
     if (isLoading) return Center(child: CircularProgressIndicator());
 
-    if (userProfile == null)
-      return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.arrow_back_ios),
-          ),
-        ),
-        body: Center(child: Text("No profile data")),
-      );
+    if (userProfile == null) return Center(child: Text("No profile data"));
 
     return Scaffold(
-      appBar: AppBar(title: Text("Profile")),
-      body: Padding(
+      appBar: AppBar(
+        title: Text("Profile"),
+        centerTitle: true,
+        backgroundColor: LightAppColors.primary800,
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
         padding: EdgeInsets.all(16.h),
         child: Column(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(50.r),
-              child: Image.network(
-                userProfile!.profilePhotoUrl,
-                height: 100.h,
-                width: 100.h,
-                fit: BoxFit.cover,
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 8,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipOval(
+                child: AppImages(
+                  imagePath: userProfile!.profilePhotoUrl,
+                  height: 120.h,
+                  width: 120.h,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             12.h.ph,
-            Text(userProfile!.username, style: TextStyle(fontSize: 20.sp)),
-            Text(userProfile!.email),
-            Text(userProfile!.phoneNumber),
-            Text(userProfile!.countryCode),
-            Text(userProfile!.role),
-            Spacer(),
+            Text(
+              userProfile!.username,
+              style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              userProfile!.role,
+              style: TextStyle(fontSize: 16.sp, color: Colors.grey[600]),
+            ),
+
+            24.h.ph,
+            _infoCard(Icons.email, "Email", userProfile!.email),
+            _infoCard(Icons.phone, "Phone", userProfile!.phoneNumber),
+            _infoCard(Icons.flag, "Country Code", userProfile!.countryCode),
+
+            30.h.ph,
             AppButton(
               text: "Edit Profile",
               width: 200.w,
@@ -86,14 +103,25 @@ class _ProfileViewState extends State<AccountView> {
                   ),
                 );
                 if (updated != null) {
-                  setState(() {
-                    userProfile = updated;
-                  });
+                  setState(() => userProfile = updated);
                 }
               },
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _infoCard(IconData icon, String label, String value) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 6.h),
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      child: ListTile(
+        leading: Icon(icon, color: LightAppColors.primary800),
+        title: Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text(value),
       ),
     );
   }
