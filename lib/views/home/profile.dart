@@ -1,8 +1,10 @@
 import 'package:cosmetics/core/common/widgets/app_images.dart';
+import 'package:cosmetics/core/helpers/app_navigator.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
+import 'package:cosmetics/views/home/account.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -66,7 +68,9 @@ class ProfilePage extends StatelessWidget {
               ProfileItem(
                 icon: '/edit_info.svg',
                 title: "Edit Info",
-                onTap: () {},
+                onTap: () {
+                  AppNavigator.push(context, AccountView());
+                },
               ),
               ProfileItem(
                 icon: '/order_history.svg',
