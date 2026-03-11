@@ -1,51 +1,50 @@
 import 'package:cosmetics/core/common/widgets/app_images.dart';
 import 'package:cosmetics/core/helpers/app_navigator.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
+import 'package:cosmetics/core/network/dio_helper.dart';
 import 'package:cosmetics/views/check_out.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
 import 'package:flutter/cupertino.dart';
 
-class MyCartPage extends StatelessWidget {
+class MyCartPage extends StatefulWidget {
   const MyCartPage({super.key});
 
   @override
+  State<MyCartPage> createState() => _MyCartPageState();
+}
+
+class _MyCartPageState extends State<MyCartPage> {
+  CartModel? cart;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCartItems();
+  }
+
+  Future<void> fetchCartItems() async {
+    try {
+      final response = await DioHelper.get("/api/Cart");
+      setState(() {
+        cart = CartModel.fromJson(response.data);
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Error loading cart")));
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final cartProducts = [
-      _Products(
-        image:
-            'https://i.pinimg.com/originals/11/f5/22/11f522c7f8ead5519a4b102723f0a89c.jpg',
-        brandName: 'Note Cosmetics',
-        productName: 'Ultra rich mascara for lashes',
-        price: 350,
-        quantity: 3,
-      ),
-      _Products(
-        image:
-            'https://i.pinimg.com/originals/11/f5/22/11f522c7f8ead5519a4b102723f0a89c.jpg',
-        brandName: 'Note Cosmetics',
-        productName: 'Ultra rich mascara for lashes',
-        price: 350,
-        quantity: 3,
-      ),
-      _Products(
-        image:
-            'https://i.pinimg.com/originals/11/f5/22/11f522c7f8ead5519a4b102723f0a89c.jpg',
-        brandName: 'Note Cosmetics',
-        productName: 'Ultra rich mascara for lashes',
-        price: 350,
-        quantity: 3,
-      ),
-      _Products(
-        image:
-            'https://i.pinimg.com/originals/11/f5/22/11f522c7f8ead5519a4b102723f0a89c.jpg',
-        brandName: 'Note Cosmetics',
-        productName: 'Ultra rich mascara for lashes',
-        price: 350,
-        quantity: 3,
-      ),
-    ];
     return Padding(
       padding: EdgeInsets.all(12.h),
       child: Column(
@@ -71,13 +70,16 @@ class MyCartPage extends StatelessWidget {
           ),
           24.h.ph,
           Expanded(
-            child: ListView.builder(
-              itemCount: cartProducts.length,
-              itemBuilder: (context, index) {
-                final product = cartProducts[index];
-                return MyCartProductCard(model: product, onDelete: () {});
-              },
-            ),
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    itemCount: cart?.items.length ?? 0,
+                    itemBuilder: (context, index) {
+                      final product = cart!.items[index];
+
+                      return MyCartProductCard(model: product, onDelete: () {});
+                    },
+                  ),
           ),
         ],
       ),
@@ -92,7 +94,7 @@ class MyCartProductCard extends StatefulWidget {
     required this.model,
   });
 
-  final _Products model;
+  final CartItemModel model;
   final VoidCallback onDelete;
 
   @override
@@ -133,7 +135,7 @@ class _MyCartProductCardState extends State<MyCartProductCard> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12.r),
                   child: AppImages(
-                    imagePath: widget.model.image,
+                    imagePath: widget.model.imageUrl,
                     height: 70.h,
                     width: 70.w,
                     fit: BoxFit.cover,
@@ -168,7 +170,7 @@ class _MyCartProductCardState extends State<MyCartProductCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.model.brandName,
+                    widget.model.productName,
                     style: AppTextStyles.font16SemiBold.copyWith(
                       color: LightAppColors.primary800,
                     ),
@@ -247,18 +249,58 @@ class _MyCartProductCardState extends State<MyCartProductCard> {
   }
 }
 
-class _Products {
-  final String image;
-  final String brandName;
-  final String productName;
-  final double price;
-  final int quantity;
+class CartModel {
+  final List<CartItemModel> items;
+  final double total;
 
-  _Products({
-    required this.image,
-    required this.brandName,
+  CartModel({required this.items, required this.total});
+
+  factory CartModel.fromJson(Map<String, dynamic> json) {
+    return CartModel(
+      items: (json['items'] as List)
+          .map((e) => CartItemModel.fromJson(e))
+          .toList(),
+      total: (json['total'] as num).toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'items': items.map((e) => e.toJson()).toList(), 'total': total};
+  }
+}
+
+class CartItemModel {
+  final int productId;
+  final String productName;
+  final int quantity;
+  final double price;
+  final String imageUrl;
+
+  CartItemModel({
+    required this.productId,
     required this.productName,
-    required this.price,
     required this.quantity,
+    required this.price,
+    required this.imageUrl,
   });
+
+  factory CartItemModel.fromJson(Map<String, dynamic> json) {
+    return CartItemModel(
+      productId: json['productId'],
+      productName: json['productName'],
+      quantity: json['quantity'],
+      price: (json['price'] as num).toDouble(),
+      imageUrl: json['imageUrl'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'productId': productId,
+      'productName': productName,
+      'quantity': quantity,
+      'price': price,
+      'imageUrl': imageUrl,
+    };
+  }
 }

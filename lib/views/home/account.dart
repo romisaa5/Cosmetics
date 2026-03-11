@@ -42,7 +42,19 @@ class _ProfileViewState extends State<AccountView> {
   Widget build(BuildContext context) {
     if (isLoading) return Center(child: CircularProgressIndicator());
 
-    if (userProfile == null) return Center(child: Text("No profile data"));
+    if (userProfile == null)
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: LightAppColors.background,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back_ios),
+          ),
+        ),
+        body: Center(child: Text("No profile data")),
+      );
 
     return Scaffold(
       appBar: AppBar(

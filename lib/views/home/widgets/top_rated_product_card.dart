@@ -3,6 +3,7 @@ import 'package:cosmetics/core/helpers/extensions.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
+import 'package:flutter/cupertino.dart';
 
 class TopRatedProductCard extends StatelessWidget {
   const TopRatedProductCard({
@@ -10,11 +11,13 @@ class TopRatedProductCard extends StatelessWidget {
     required this.imageUrl,
     required this.title,
     required this.price,
+    required this.onPressed,
   });
 
   final String imageUrl;
   final String title;
   final String price;
+  final void Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +44,16 @@ class TopRatedProductCard extends StatelessWidget {
                 Positioned(
                   top: 6.h,
                   right: 6.w,
-                  child: Container(
-                    padding: EdgeInsets.all(6.r),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.r),
-                      color: LightAppColors.grey0,
+                  child: CupertinoButton(
+                    onPressed: onPressed,
+                    child: Container(
+                      padding: EdgeInsets.all(6.r),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.r),
+                        color: LightAppColors.grey0,
+                      ),
+                      child: AppImages(imagePath: '/add_cart.svg'),
                     ),
-                    child: AppImages(imagePath: '/add_cart.svg'),
                   ),
                 ),
               ],

@@ -45,6 +45,23 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> addToCart(int productId) async {
+    try {
+      final response = await DioHelper.post(
+        "/api/Cart/add",
+        queryParameters: {"productId": productId, "quantity": 1},
+      );
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(response.data["message"])));
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Failed to add to cart")));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -93,6 +110,9 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (context, index) {
                   final product = topRatedProducts[index];
                   return TopRatedProductCard(
+                    onPressed: () {
+                      addToCart(product.id);
+                    },
                     imageUrl: product.imageUrl,
                     title: product.name,
                     price: "\$${product.price}",
