@@ -58,6 +58,7 @@ class _LoginViewState extends State<LoginView> {
       );
 
       final loginResponse = LoginResponse.fromJson(response.data);
+      print(loginResponse.token);
 
       setState(() {
         isLoading = false;

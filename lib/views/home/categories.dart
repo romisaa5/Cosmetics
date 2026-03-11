@@ -4,39 +4,42 @@ import 'package:cosmetics/core/helpers/extensions.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
+import 'package:cosmetics/core/network/dio_helper.dart';
 
-class CategoriesPage extends StatelessWidget {
+class CategoriesPage extends StatefulWidget {
   const CategoriesPage({super.key});
 
   @override
+  State<CategoriesPage> createState() => _CategoriesPageState();
+}
+
+class _CategoriesPageState extends State<CategoriesPage> {
+  List<_Category> categories = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCategories();
+  }
+
+  Future<void> fetchCategories() async {
+    try {
+      final response = await DioHelper.get("/api/Categories");
+      final data = response.data as List;
+      setState(() {
+        categories = data.map((json) => _Category.fromJson(json)).toList();
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final categories = [
-      _Categories(
-        title: 'Bundles',
-        image:
-            'https://i.pinimg.com/originals/11/f5/22/11f522c7f8ead5519a4b102723f0a89c.jpg',
-      ),
-      _Categories(
-        title: 'Perfumes',
-        image:
-            'https://i.pinimg.com/originals/11/f5/22/11f522c7f8ead5519a4b102723f0a89c.jpg',
-      ),
-      _Categories(
-        title: 'Makeup',
-        image:
-            'https://i.pinimg.com/originals/11/f5/22/11f522c7f8ead5519a4b102723f0a89c.jpg',
-      ),
-      _Categories(
-        title: 'Skin Care',
-        image:
-            'https://i.pinimg.com/originals/11/f5/22/11f522c7f8ead5519a4b102723f0a89c.jpg',
-      ),
-      _Categories(
-        title: 'Gifts',
-        image:
-            'https://i.pinimg.com/originals/11/f5/22/11f522c7f8ead5519a4b102723f0a89c.jpg',
-      ),
-    ];
     return Padding(
       padding: EdgeInsets.all(12.h),
       child: Column(
@@ -62,12 +65,18 @@ class CategoriesPage extends StatelessWidget {
           ),
           30.h.ph,
           Expanded(
-            child: ListView.builder(
-              itemCount: categories.length,
-              itemBuilder: (context, index) {
-                return CategoryCard(model: categories[index]);
-              },
-            ),
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      final category = categories[index];
+                      return CategoryCard(
+                        title: category.title,
+                        imageUrl: category.imageUrl,
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -75,17 +84,11 @@ class CategoriesPage extends StatelessWidget {
   }
 }
 
-class _Categories {
-  final String title;
-  final String image;
-
-  _Categories({required this.title, required this.image});
-}
-
 class CategoryCard extends StatelessWidget {
-  const CategoryCard({super.key, required this.model});
+  const CategoryCard({super.key, required this.title, required this.imageUrl});
 
-  final _Categories model;
+  final String title;
+  final String imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +99,7 @@ class CategoryCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(12.r),
               child: AppImages(
-                imagePath: model.image,
+                imagePath: imageUrl,
                 height: 60.h,
                 width: 60.w,
                 fit: BoxFit.cover,
@@ -105,7 +108,7 @@ class CategoryCard extends StatelessWidget {
             12.w.pw,
             Expanded(
               child: Text(
-                model.title,
+                title,
                 style: AppTextStyles.font16SemiBold.copyWith(
                   color: LightAppColors.primary800,
                 ),
@@ -113,13 +116,10 @@ class CategoryCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-
             AppImages(imagePath: '/forward.svg'),
           ],
         ),
-
         12.h.ph,
-
         Divider(
           thickness: 1,
           color: LightAppColors.grey500.withValues(alpha: .5),
@@ -127,5 +127,25 @@ class CategoryCard extends StatelessWidget {
         12.h.ph,
       ],
     );
+  }
+}
+
+class _Category {
+  final int id;
+  final String title;
+  final String imageUrl;
+
+  _Category({required this.id, required this.title, required this.imageUrl});
+
+  factory _Category.fromJson(Map<String, dynamic> json) {
+    return _Category(
+      id: json['id'],
+      title: json['title'],
+      imageUrl: json['imageUrl'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {"id": id, "title": title, "imageUrl": imageUrl};
   }
 }
