@@ -13,6 +13,7 @@ import 'package:cosmetics/views/auth/login.dart';
 import 'package:cosmetics/views/auth/verify_code.dart';
 import 'package:cosmetics/views/auth/widgets/auth_switcher_text.dart';
 import 'package:cosmetics/views/auth/widgets/success_dialog.dart';
+import 'package:cosmetics/views/home/view.dart';
 import 'package:dio/dio.dart';
 
 class RegisterView extends StatefulWidget {
@@ -32,6 +33,7 @@ class _RegisterViewState extends State<RegisterView> {
   bool isPasswordObscure = true;
   bool isConfirmPasswordObscure = true;
   bool isLoading = false;
+  String selectedCountryCode = "+20";
 
   @override
   void dispose() {
@@ -53,7 +55,7 @@ class _RegisterViewState extends State<RegisterView> {
     try {
       final request = _RegisterRequest(
         username: nameController.text,
-        countryCode: "+20",
+        countryCode: selectedCountryCode,
         phoneNumber: phoneController.text,
         email: emailController.text,
         password: passwordContoller.text,
@@ -78,10 +80,14 @@ class _RegisterViewState extends State<RegisterView> {
         context,
         VerifyCodeView(
           contact: 'your email ${emailController.text}',
-          onTap: () => showDialog(
+          onSuccess: () => showDialog(
             context: context,
             builder: (context) {
               return AccountActivatedDialog(
+                onTap: () {
+                  Navigator.pop(context);
+                  AppNavigator.pushAndRemoveUntil(context, HomeView());
+                },
                 title: 'Account Activated!',
                 subTitle:
                     'Congratulations! Your account has been successfully activated',
@@ -89,6 +95,8 @@ class _RegisterViewState extends State<RegisterView> {
               );
             },
           ),
+          countryCode: selectedCountryCode,
+          phoneNumber: phoneController.text,
         ),
       );
     } on DioException catch (e) {
@@ -150,6 +158,9 @@ class _RegisterViewState extends State<RegisterView> {
                         AppPhoneInput(
                           phoneController: phoneController,
                           validator: AppValidators.phone,
+                          onCountryChanged: (code) {
+                            selectedCountryCode = code;
+                          },
                         ),
                         16.h.ph,
                         AppInput(

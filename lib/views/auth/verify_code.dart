@@ -1,15 +1,27 @@
 import 'package:cosmetics/core/common/widgets/app_images.dart';
 import 'package:cosmetics/core/common/widgets/app_button.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
+import 'package:cosmetics/core/network/dio_helper.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
 import 'package:cosmetics/views/auth/widgets/otp_field.dart';
+import 'package:cosmetics/views/auth/widgets/success_dialog.dart';
+import 'package:dio/dio.dart';
 
 class VerifyCodeView extends StatefulWidget {
-  const VerifyCodeView({super.key, required this.contact, this.onTap});
+  const VerifyCodeView({
+    super.key,
+    required this.contact,
+    required this.countryCode,
+    required this.phoneNumber,
+
+    this.onSuccess,
+  });
+  final String countryCode;
+  final String phoneNumber;
   final String contact;
-  final void Function()? onTap;
+  final VoidCallback? onSuccess;
 
   @override
   State<VerifyCodeView> createState() => _VerifyCodeViewState();
@@ -18,6 +30,63 @@ class VerifyCodeView extends StatefulWidget {
 class _VerifyCodeViewState extends State<VerifyCodeView> {
   final formKey = GlobalKey<FormState>();
   String otpCode = '';
+  bool isLoading = false;
+
+  Future<void> verifyOtp() async {
+    if (otpCode.isEmpty || otpCode.length != 4) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid 4-digit OTP code')),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    final request = _VerifyOtpRequest(
+      countryCode: widget.countryCode,
+      phoneNumber: widget.phoneNumber,
+      otpCode: otpCode,
+    );
+
+    try {
+      final response = await DioHelper.post(
+        "/api/Auth/verify-otp",
+        data: request.toJson(),
+      );
+
+      final message = response.data["message"] ?? "Account verified!";
+
+      setState(() {
+        isLoading = false;
+      });
+
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AccountActivatedDialog(
+            title: 'Account Activated!',
+            subTitle: message,
+            buttonTitle: 'Go to home',
+          );
+        },
+      );
+
+      if (widget.onSuccess != null) widget.onSuccess!();
+    } on DioException catch (e) {
+      final errorMessage =
+          e.response?.data["message"] ?? "Something went wrong";
+
+      setState(() {
+        isLoading = false;
+      });
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(errorMessage)));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +144,9 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                         ),
                         Spacer(),
                         AppButton(
-                          text: 'Done',
+                          text: isLoading ? 'Verifying...' : 'Done',
                           width: 270.w,
-                          onTap: widget.onTap,
+                          onTap: isLoading ? null : verifyOtp,
                         ),
                         Spacer(),
                       ],
@@ -90,5 +159,25 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
         ),
       ),
     );
+  }
+}
+
+class _VerifyOtpRequest {
+  final String countryCode;
+  final String phoneNumber;
+  final String otpCode;
+
+  _VerifyOtpRequest({
+    required this.countryCode,
+    required this.phoneNumber,
+    required this.otpCode,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      "countryCode": countryCode,
+      "phoneNumber": phoneNumber,
+      "otpCode": otpCode,
+    };
   }
 }

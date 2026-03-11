@@ -11,12 +11,14 @@ class AppPhoneInput extends StatefulWidget {
   final TextEditingController phoneController;
   final Function(String completePhone)? onChanged;
   final String? Function(String?)? validator;
+  final Function(String countryCode)? onCountryChanged;
 
   const AppPhoneInput({
     super.key,
     required this.phoneController,
     this.onChanged,
     this.validator,
+    this.onCountryChanged,
   });
 
   @override
@@ -112,6 +114,7 @@ class _AppPhoneInputState extends State<AppPhoneInput> {
                   if (val == null) return;
                   countryNotifier.value = val;
                   _updateFullNumber();
+                  widget.onCountryChanged?.call(val);
                 },
                 underline: Container(),
               );

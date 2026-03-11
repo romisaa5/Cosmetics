@@ -109,7 +109,10 @@ class _LoginViewState extends State<LoginView> {
                           width: 270.w,
                           onTap: () {
                             if (formKey.currentState!.validate()) {
-                              AppNavigator.pushAndRemoveUntil(context, View());
+                              AppNavigator.pushAndRemoveUntil(
+                                context,
+                                HomeView(),
+                              );
                             }
                           },
                         ),

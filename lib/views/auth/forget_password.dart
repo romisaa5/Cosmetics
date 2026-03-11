@@ -59,9 +59,11 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
                         context,
                         VerifyCodeView(
                           contact: '+20 1022658997',
-                          onTap: () {
+                          onSuccess: () {
                             AppNavigator.push(context, CreateNewPasswordView());
                           },
+                          countryCode: '',
+                          phoneNumber: '',
                         ),
                       );
                     },

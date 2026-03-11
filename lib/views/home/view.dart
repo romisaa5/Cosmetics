@@ -7,14 +7,14 @@ import 'package:cosmetics/views/home/home.dart';
 import 'package:cosmetics/views/home/profile.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
-class View extends StatefulWidget {
-  const View({super.key});
+class HomeView extends StatefulWidget {
+  const HomeView({super.key});
 
   @override
-  State<View> createState() => _ViewState();
+  State<HomeView> createState() => _HomeViewState();
 }
 
-class _ViewState extends State<View> {
+class _HomeViewState extends State<HomeView> {
   int _selectedIndex = 0;
 
   final _pages = [
