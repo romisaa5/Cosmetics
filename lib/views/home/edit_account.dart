@@ -1,6 +1,7 @@
 import 'package:cosmetics/core/common/widgets/app_button.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
 import 'package:cosmetics/core/network/dio_helper.dart';
+import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
 import 'package:cosmetics/views/home/account.dart';
 import '../../core/common/widgets/app_input.dart';
@@ -79,11 +80,17 @@ class _EditProfileViewState extends State<EditProfileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Edit Profile")),
+      appBar: AppBar(
+        backgroundColor: LightAppColors.primary800,
+        foregroundColor: LightAppColors.grey0,
+        centerTitle: true,
+        title: Text("Edit Profile"),
+      ),
       body: Padding(
         padding: EdgeInsets.all(16.h),
         child: Column(
           children: [
+            12.h.ph,
             AppInput(labelText: "Username", controller: usernameController),
             12.h.ph,
             AppInput(labelText: "Email", controller: emailController),

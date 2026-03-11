@@ -6,6 +6,7 @@ import 'package:cosmetics/core/helpers/app_navigator.dart';
 import 'package:cosmetics/core/helpers/app_validators.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
 import 'package:cosmetics/core/network/dio_helper.dart';
+import 'package:cosmetics/core/network/token_storage.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart' hide View;
@@ -58,7 +59,8 @@ class _LoginViewState extends State<LoginView> {
       );
 
       final loginResponse = LoginResponse.fromJson(response.data);
-      print(loginResponse.token);
+
+      await TokenStorage.saveToken(loginResponse.token);
 
       setState(() {
         isLoading = false;

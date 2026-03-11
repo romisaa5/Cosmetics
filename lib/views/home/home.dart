@@ -51,7 +51,6 @@ class _HomePageState extends State<HomePage> {
         "/api/Cart/add",
         queryParameters: {"productId": productId, "quantity": 1},
       );
-
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(response.data["message"])));
