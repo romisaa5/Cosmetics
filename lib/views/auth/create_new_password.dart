@@ -3,13 +3,22 @@ import 'package:cosmetics/core/common/widgets/app_input.dart';
 import 'package:cosmetics/core/helpers/app_navigator.dart';
 import 'package:cosmetics/core/helpers/app_validators.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
+import 'package:cosmetics/core/network/dio_helper.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
 import 'package:cosmetics/views/auth/login.dart';
 import 'package:cosmetics/views/auth/widgets/auth_header_section.dart';
 import 'package:cosmetics/views/auth/widgets/success_dialog.dart';
+import 'package:dio/dio.dart';
 
 class CreateNewPasswordView extends StatefulWidget {
-  const CreateNewPasswordView({super.key});
+  const CreateNewPasswordView({
+    super.key,
+    required this.countryCode,
+    required this.phoneNumber,
+  });
+
+  final String countryCode;
+  final String phoneNumber;
 
   @override
   State<CreateNewPasswordView> createState() => _CreateNewPasswordViewState();
@@ -21,12 +30,66 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
   final formKey = GlobalKey<FormState>();
   bool isPasswordObscure = true;
   bool isConfirmPasswordObscure = true;
+  bool isLoading = false;
 
   @override
   void dispose() {
     passwordContoller.dispose();
     confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  Future<void> resetPassword() async {
+    if (!formKey.currentState!.validate()) return;
+
+    setState(() {
+      isLoading = true;
+    });
+
+    final request = ResetPasswordRequest(
+      countryCode: widget.countryCode,
+      phoneNumber: widget.phoneNumber,
+      newPassword: passwordContoller.text,
+      confirmPassword: confirmPasswordController.text,
+    );
+
+    try {
+      final response = await DioHelper.post(
+        "/api/Auth/reset-password",
+        data: request.toJson(),
+      );
+
+      final message =
+          response.data["message"] ?? "Password reset successfully.";
+
+      setState(() {
+        isLoading = false;
+      });
+
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AccountActivatedDialog(
+            title: 'Password Reset!',
+            subTitle: message,
+            buttonTitle: 'Return to login',
+            onTap: () {
+              Navigator.pop(context);
+              AppNavigator.pushAndRemoveUntil(context, LoginView());
+            },
+          );
+        },
+      );
+    } on DioException catch (e) {
+      final errorMessage =
+          e.response?.data["message"] ?? "Something went wrong";
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(errorMessage)));
+    }
   }
 
   @override
@@ -48,9 +111,7 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
+                            onPressed: () => Navigator.pop(context),
                             icon: Icon(Icons.arrow_back_ios),
                           ),
                         ),
@@ -106,25 +167,8 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
                         ),
                         60.h.ph,
                         AppButton(
-                          onTap: () => showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AccountActivatedDialog(
-                                title: 'Password Created!',
-                                subTitle:
-                                    'Congratulations! Your password has been successfully created',
-                                buttonTitle: 'Return to login',
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  AppNavigator.pushAndRemoveUntil(
-                                    context,
-                                    LoginView(),
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                          text: 'Confirm',
+                          onTap: isLoading ? null : resetPassword,
+                          text: isLoading ? 'Processing...' : 'Confirm',
                           width: 270.w,
                         ),
                         Spacer(),
@@ -138,5 +182,28 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
         ),
       ),
     );
+  }
+}
+
+class ResetPasswordRequest {
+  final String countryCode;
+  final String phoneNumber;
+  final String newPassword;
+  final String confirmPassword;
+
+  ResetPasswordRequest({
+    required this.countryCode,
+    required this.phoneNumber,
+    required this.newPassword,
+    required this.confirmPassword,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      "countryCode": countryCode,
+      "phoneNumber": phoneNumber,
+      "newPassword": newPassword,
+      "confirmPassword": confirmPassword,
+    };
   }
 }

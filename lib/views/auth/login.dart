@@ -5,6 +5,7 @@ import 'package:cosmetics/core/common/widgets/app_input.dart';
 import 'package:cosmetics/core/helpers/app_navigator.dart';
 import 'package:cosmetics/core/helpers/app_validators.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
+import 'package:cosmetics/core/network/dio_helper.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart' hide View;
@@ -12,6 +13,7 @@ import 'package:cosmetics/views/auth/forget_password.dart';
 import 'package:cosmetics/views/auth/register.dart';
 import 'package:cosmetics/views/auth/widgets/auth_switcher_text.dart';
 import 'package:cosmetics/views/home/view.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart' hide View;
 
 class LoginView extends StatefulWidget {
@@ -26,12 +28,54 @@ class _LoginViewState extends State<LoginView> {
   final passwordContoller = TextEditingController();
   bool isPasswordObscure = true;
   final formKey = GlobalKey<FormState>();
+  String selectedCountryCode = "+20";
+  bool isLoading = false;
 
   @override
   void dispose() {
     passwordContoller.dispose();
     phoneController.dispose();
     super.dispose();
+  }
+
+  Future<void> login() async {
+    if (!formKey.currentState!.validate()) return;
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final request = _LoginRequest(
+        countryCode: "+20",
+        phoneNumber: phoneController.text,
+        password: passwordContoller.text,
+      );
+
+      final response = await DioHelper.post(
+        "/api/Auth/login",
+        data: request.toJson(),
+      );
+
+      final loginResponse = LoginResponse.fromJson(response.data);
+
+      setState(() {
+        isLoading = false;
+      });
+
+      AppNavigator.pushAndRemoveUntil(context, HomeView());
+    } on DioException catch (e) {
+      final errorMessage =
+          e.response?.data['message'] ?? "Something went wrong";
+
+      setState(() {
+        isLoading = false;
+      });
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(errorMessage)));
+    }
   }
 
   @override
@@ -69,6 +113,9 @@ class _LoginViewState extends State<LoginView> {
                         AppPhoneInput(
                           phoneController: phoneController,
                           validator: AppValidators.phone,
+                          onCountryChanged: (code) {
+                            selectedCountryCode = code;
+                          },
                         ),
                         8.h.ph,
                         AppInput(
@@ -105,16 +152,9 @@ class _LoginViewState extends State<LoginView> {
                           },
                         ),
                         AppButton(
-                          text: 'Login',
+                          text: isLoading ? 'Loading...' : 'Login',
                           width: 270.w,
-                          onTap: () {
-                            if (formKey.currentState!.validate()) {
-                              AppNavigator.pushAndRemoveUntil(
-                                context,
-                                HomeView(),
-                              );
-                            }
-                          },
+                          onTap: login,
                         ),
                         Spacer(),
                         AuthSwitcherText(
@@ -133,6 +173,72 @@ class _LoginViewState extends State<LoginView> {
           },
         ),
       ),
+    );
+  }
+}
+
+class _LoginRequest {
+  final String countryCode;
+  final String phoneNumber;
+  final String password;
+
+  _LoginRequest({
+    required this.countryCode,
+    required this.phoneNumber,
+    required this.password,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      "countryCode": countryCode,
+      "phoneNumber": phoneNumber,
+      "password": password,
+    };
+  }
+}
+
+class LoginResponse {
+  final String token;
+  final User user;
+
+  LoginResponse({required this.token, required this.user});
+
+  factory LoginResponse.fromJson(Map<String, dynamic> json) {
+    return LoginResponse(
+      token: json['token'],
+      user: User.fromJson(json['user']),
+    );
+  }
+}
+
+class User {
+  final int id;
+  final String username;
+  final String email;
+  final String phoneNumber;
+  final String countryCode;
+  final String role;
+  final String profilePhotoUrl;
+
+  User({
+    required this.id,
+    required this.username,
+    required this.email,
+    required this.phoneNumber,
+    required this.countryCode,
+    required this.role,
+    required this.profilePhotoUrl,
+  });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      username: json['username'],
+      email: json['email'],
+      phoneNumber: json['phoneNumber'],
+      countryCode: json['countryCode'],
+      role: json['role'],
+      profilePhotoUrl: json['profilePhotoUrl'],
     );
   }
 }

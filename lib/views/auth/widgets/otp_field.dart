@@ -1,15 +1,26 @@
 import 'dart:async';
 import 'package:cosmetics/core/common/widgets/app_input.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
+import 'package:cosmetics/core/network/dio_helper.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:dio/dio.dart';
 
 class OtpField extends StatefulWidget {
   final int length;
   final void Function(String) onCompleted;
-  const OtpField({super.key, this.length = 4, required this.onCompleted});
+  final String countryCode;
+  final String phoneNumber;
+
+  const OtpField({
+    super.key,
+    this.length = 4,
+    required this.onCompleted,
+    required this.countryCode,
+    required this.phoneNumber,
+  });
 
   @override
   State<OtpField> createState() => _OtpFieldState();
@@ -22,6 +33,7 @@ class _OtpFieldState extends State<OtpField> {
   Timer? _timer;
   int _seconds = 60;
   bool canResend = false;
+  bool isResending = false;
 
   @override
   void initState() {
@@ -47,6 +59,41 @@ class _OtpFieldState extends State<OtpField> {
         _timer?.cancel();
       }
     });
+  }
+
+  Future<void> _resendOtp() async {
+    if (!canResend) return;
+
+    setState(() {
+      isResending = true;
+    });
+
+    try {
+      final request = _ResendOtpRequest(
+        countryCode: widget.countryCode,
+        phoneNumber: widget.phoneNumber,
+      );
+
+      final response = await DioHelper.post(
+        "/api/Auth/resend-otp",
+        data: request.toJson(),
+      );
+      final message = response.data["message"] ?? "OTP resent successfully.";
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+      _startTimer();
+    } on DioException catch (e) {
+      final errorMessage =
+          e.response?.data["message"] ?? "Something went wrong";
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(errorMessage)));
+    } finally {
+      setState(() {
+        isResending = false;
+      });
+    }
   }
 
   @override
@@ -106,15 +153,11 @@ class _OtpFieldState extends State<OtpField> {
               ),
             ),
             GestureDetector(
-              onTap: canResend
-                  ? () {
-                      _startTimer();
-                    }
-                  : null,
+              onTap: canResend && !isResending ? _resendOtp : null,
               child: Text(
-                " Resend",
+                isResending ? "Resending..." : " Resend",
                 style: AppTextStyles.font12Regular.copyWith(
-                  color: canResend
+                  color: canResend && !isResending
                       ? LightAppColors.secondary800
                       : LightAppColors.grey500,
                 ),
@@ -131,5 +174,16 @@ class _OtpFieldState extends State<OtpField> {
         ),
       ],
     );
+  }
+}
+
+class _ResendOtpRequest {
+  final String countryCode;
+  final String phoneNumber;
+
+  _ResendOtpRequest({required this.countryCode, required this.phoneNumber});
+
+  Map<String, dynamic> toJson() {
+    return {"countryCode": countryCode, "phoneNumber": phoneNumber};
   }
 }

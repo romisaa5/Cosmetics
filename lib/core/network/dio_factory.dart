@@ -17,7 +17,8 @@ class DioFactory {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          String token = "your_token_here";
+          String token =
+              "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI1MTY4IiwidW5pcXVlX25hbWUiOiJSb21pc2FhIiwiZW1haWwiOiJyb21pc2FhZmFkZWw5ODJAZ21haWwuY29tIiwicm9sZSI6IkN1c3RvbWVyIiwibmJmIjoxNzczMjAwNDE1LCJleHAiOjE3NzMyODY4MTUsImlhdCI6MTc3MzIwMDQxNSwiaXNzIjoiQ29zbWF0aWNzQXBpIiwiYXVkIjoiQ29zbWF0aWNzVXNlcnMifQ.A1U6UPlzPv3j3KKxr0LhFy0-OEP9UvnJ_cHTyJNfDWKCAdgyTTZ7UmxIKzZt3N_pkHWsrG8xHhr38pTWQBWjpQ";
           options.headers["Authorization"] = "Bearer $token";
           return handler.next(options);
         },

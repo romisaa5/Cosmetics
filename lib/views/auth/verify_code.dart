@@ -6,7 +6,6 @@ import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
 import 'package:cosmetics/views/auth/widgets/otp_field.dart';
-import 'package:cosmetics/views/auth/widgets/success_dialog.dart';
 import 'package:dio/dio.dart';
 
 class VerifyCodeView extends StatefulWidget {
@@ -61,17 +60,9 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
       setState(() {
         isLoading = false;
       });
-
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AccountActivatedDialog(
-            title: 'Account Activated!',
-            subTitle: message,
-            buttonTitle: 'Go to home',
-          );
-        },
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
 
       if (widget.onSuccess != null) widget.onSuccess!();
     } on DioException catch (e) {
@@ -141,6 +132,8 @@ class _VerifyCodeViewState extends State<VerifyCodeView> {
                               otpCode = code;
                             });
                           },
+                          countryCode: widget.countryCode,
+                          phoneNumber: widget.phoneNumber,
                         ),
                         Spacer(),
                         AppButton(
