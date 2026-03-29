@@ -40,7 +40,10 @@ class TopRatedProductCard extends StatelessWidget {
             aspectRatio: 1,
             child: Stack(
               children: [
-                AppImages(imagePath: imageUrl, width: double.infinity),
+                AppImages(
+                  imagePath: 'https://cosmatics.growfet.com/$imageUrl',
+                  width: double.infinity,
+                ),
                 Positioned(
                   top: 6.h,
                   right: 6.w,

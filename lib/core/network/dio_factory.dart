@@ -1,5 +1,7 @@
 import 'package:cosmetics/core/network/token_storage.dart';
 import 'package:dio/dio.dart';
+import 'dart:io';
+import 'package:dio/io.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class DioFactory {
@@ -14,6 +16,13 @@ class DioFactory {
         responseType: ResponseType.json,
       ),
     );
+
+    (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+      final client = HttpClient();
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+      return client;
+    };
 
     dio.interceptors.add(
       InterceptorsWrapper(

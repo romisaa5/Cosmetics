@@ -5,10 +5,12 @@ import 'package:cosmetics/core/common/widgets/app_input.dart';
 import 'package:cosmetics/core/helpers/app_navigator.dart';
 import 'package:cosmetics/core/helpers/app_validators.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
+import 'package:cosmetics/core/helpers/shared_pref_helper.dart';
 import 'package:cosmetics/core/network/dio_helper.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
+import 'package:cosmetics/core/utils/shared_pref_keys.dart';
 import 'package:cosmetics/views/auth/login.dart';
 import 'package:cosmetics/views/auth/verify_code.dart';
 import 'package:cosmetics/views/auth/widgets/auth_switcher_text.dart';
@@ -77,16 +79,19 @@ class _RegisterViewState extends State<RegisterView> {
       ).showSnackBar(SnackBar(content: Text(message)));
 
       AppNavigator.push(
-        context,
         VerifyCodeView(
           contact: 'your email ${emailController.text}',
           onSuccess: () => showDialog(
             context: context,
             builder: (context) {
               return AccountActivatedDialog(
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(context);
-                  AppNavigator.pushAndRemoveUntil(context, HomeView());
+                  await SharedPrefHelper.setData(
+                    key: SharedPrefKeys.kIsRegistered,
+                    value: true,
+                  );
+                  AppNavigator.pushAndRemoveUntil(HomeView());
                 },
                 title: 'Account Activated!',
                 subTitle:
@@ -219,7 +224,7 @@ class _RegisterViewState extends State<RegisterView> {
                           normalText: "Already have an account? ",
                           actionText: "Login",
                           onTap: () {
-                            AppNavigator.push(context, LoginView());
+                            AppNavigator.push(LoginView());
                           },
                         ),
                       ],

@@ -1,3 +1,5 @@
+import 'package:cosmetics/core/helpers/app_navigator.dart';
+import 'package:cosmetics/core/helpers/shared_pref_helper.dart';
 import 'package:cosmetics/core/network/dio_helper.dart';
 import 'package:cosmetics/core/theme/app_colors/light_theme_data.dart';
 import 'package:cosmetics/views/splash.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SharedPrefHelper.init();
   await DioHelper.init();
   await ScreenUtil.ensureScreenSize();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
@@ -33,6 +36,7 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (_, child) {
         return MaterialApp(
+          navigatorKey: AppNavigator.navigatorKey,
           home: const SplashView(),
           debugShowCheckedModeBanner: false,
           theme: getLightTheme(context),

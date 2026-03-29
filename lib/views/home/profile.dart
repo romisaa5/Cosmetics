@@ -15,7 +15,7 @@ class ProfilePage extends StatelessWidget {
     try {
       await DioHelper.post("/api/Auth/logout");
       await TokenStorage.deleteToken();
-      AppNavigator.pushAndRemoveUntil(context, const LoginView());
+      AppNavigator.pushAndRemoveUntil(const LoginView());
     } catch (e) {
       ScaffoldMessenger.of(
         context,
@@ -83,7 +83,7 @@ class ProfilePage extends StatelessWidget {
                 icon: '/edit_info.svg',
                 title: "Edit Info",
                 onTap: () {
-                  AppNavigator.push(context, AccountView());
+                  AppNavigator.push(AccountView());
                 },
               ),
               ProfileItem(

@@ -75,7 +75,7 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
             buttonTitle: 'Return to login',
             onTap: () {
               Navigator.pop(context);
-              AppNavigator.pushAndRemoveUntil(context, LoginView());
+              AppNavigator.pushAndRemoveUntil(LoginView());
             },
           );
         },

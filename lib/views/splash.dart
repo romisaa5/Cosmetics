@@ -2,7 +2,11 @@ import 'dart:async';
 import 'package:cosmetics/core/common/widgets/app_images.dart';
 import 'package:cosmetics/core/helpers/app_navigator.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
+import 'package:cosmetics/core/helpers/shared_pref_helper.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
+import 'package:cosmetics/core/utils/shared_pref_keys.dart';
+import 'package:cosmetics/views/auth/login.dart';
+import 'package:cosmetics/views/home/view.dart';
 import 'package:cosmetics/views/on_boarding.dart';
 
 class SplashView extends StatefulWidget {
@@ -21,7 +25,20 @@ class _SplashViewState extends State<SplashView> {
 
   void _navigateToHome() {
     Future.delayed(const Duration(seconds: 5), () {
-      AppNavigator.pushAndRemoveUntil(context, OnBoardingView());
+      final isSeen = SharedPrefHelper.getBool(
+        key: SharedPrefKeys.kIsOnBoardingSeen,
+      );
+
+      final isRegistered = SharedPrefHelper.getBool(
+        key: SharedPrefKeys.kIsRegistered,
+      );
+      if (isSeen == true && isRegistered != true) {
+        AppNavigator.pushAndRemoveUntil(LoginView());
+      } else if (isRegistered == true) {
+        AppNavigator.pushAndRemoveUntil(HomeView());
+      } else {
+        AppNavigator.pushAndRemoveUntil(OnBoardingView());
+      }
     });
   }
 

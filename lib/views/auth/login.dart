@@ -5,11 +5,13 @@ import 'package:cosmetics/core/common/widgets/app_input.dart';
 import 'package:cosmetics/core/helpers/app_navigator.dart';
 import 'package:cosmetics/core/helpers/app_validators.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
+import 'package:cosmetics/core/helpers/shared_pref_helper.dart';
 import 'package:cosmetics/core/network/dio_helper.dart';
 import 'package:cosmetics/core/network/token_storage.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart' hide View;
+import 'package:cosmetics/core/utils/shared_pref_keys.dart';
 import 'package:cosmetics/views/auth/forget_password.dart';
 import 'package:cosmetics/views/auth/register.dart';
 import 'package:cosmetics/views/auth/widgets/auth_switcher_text.dart';
@@ -65,8 +67,12 @@ class _LoginViewState extends State<LoginView> {
       setState(() {
         isLoading = false;
       });
+      await SharedPrefHelper.setData(
+        key: SharedPrefKeys.kIsRegistered,
+        value: true,
+      );
 
-      AppNavigator.pushAndRemoveUntil(context, HomeView());
+      AppNavigator.pushAndRemoveUntil(HomeView());
     } on DioException catch (e) {
       final errorMessage =
           e.response?.data['message'] ?? "Something went wrong";
@@ -151,7 +157,7 @@ class _LoginViewState extends State<LoginView> {
                             ),
                           ),
                           onPressed: () {
-                            AppNavigator.push(context, ForgetPasswordView());
+                            AppNavigator.push(ForgetPasswordView());
                           },
                         ),
                         AppButton(
@@ -163,9 +169,7 @@ class _LoginViewState extends State<LoginView> {
                         AuthSwitcherText(
                           normalText: "Don't have an account? ",
                           actionText: " Sign Up",
-                          onTap: () {
-                            AppNavigator.push(context, RegisterView());
-                          },
+                          onTap: login,
                         ),
                       ],
                     ),

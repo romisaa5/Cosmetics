@@ -2,7 +2,7 @@ import 'package:cosmetics/core/common/widgets/app_images.dart';
 import 'package:cosmetics/core/helpers/app_navigator.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
 import 'package:cosmetics/core/network/dio_helper.dart';
-import 'package:cosmetics/views/check_out.dart';
+import 'package:cosmetics/views/check_out/check_out.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
@@ -63,7 +63,7 @@ class _MyCartPageState extends State<MyCartPage> {
               const Spacer(),
               CupertinoButton(
                 onPressed: () {
-                  AppNavigator.push(context, CheckOutView());
+                  AppNavigator.push(CheckOutView());
                 },
                 child: AppImages(imagePath: '/add_cart.svg'),
               ),
@@ -200,7 +200,8 @@ class _MyCartProductCardState extends State<MyCartProductCard> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12.r),
                   child: AppImages(
-                    imagePath: widget.model.imageUrl,
+                    imagePath:
+                        'https://cosmatics.growfet.com/${widget.model.imageUrl}',
                     height: 70.h,
                     width: 70.w,
                     fit: BoxFit.cover,

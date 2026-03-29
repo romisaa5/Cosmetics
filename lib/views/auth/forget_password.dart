@@ -48,14 +48,12 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
       ).showSnackBar(SnackBar(content: Text(message)));
 
       AppNavigator.push(
-        context,
         VerifyCodeView(
           contact: "$selectedCountryCode ${phoneController.text}",
           countryCode: selectedCountryCode,
           phoneNumber: phoneController.text,
           onSuccess: () {
             AppNavigator.push(
-              context,
               CreateNewPasswordView(
                 countryCode: selectedCountryCode,
                 phoneNumber: phoneController.text,

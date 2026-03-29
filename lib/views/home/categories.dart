@@ -27,11 +27,13 @@ class _CategoriesPageState extends State<CategoriesPage> {
     try {
       final response = await DioHelper.get("/api/Categories");
       final data = response.data as List;
+      if (!mounted) return;
       setState(() {
         categories = data.map((json) => _Category.fromJson(json)).toList();
         isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         isLoading = false;
       });
@@ -73,7 +75,8 @@ class _CategoriesPageState extends State<CategoriesPage> {
                       final category = categories[index];
                       return CategoryCard(
                         title: category.title,
-                        imageUrl: category.imageUrl,
+                        imageUrl:
+                            'https://cosmatics.growfet.com/${category.imageUrl}',
                       );
                     },
                   ),

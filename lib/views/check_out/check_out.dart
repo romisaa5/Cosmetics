@@ -4,6 +4,7 @@ import 'package:cosmetics/core/helpers/extensions.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
+import 'package:cosmetics/views/check_out/widgets/selection_google_maps_card.dart';
 
 class CheckOutView extends StatelessWidget {
   const CheckOutView({super.key});
@@ -27,7 +28,7 @@ class CheckOutView extends StatelessWidget {
                   children: [
                     _buildSectionTitle('Delivery to'),
                     10.h.ph,
-                    _buildSelectionCard(
+                    SelectionGoogleMapsCard(
                       icon: Icons.location_on_outlined,
                       title: 'Home',
                       subtitle: 'Mansoura, 14 Forsaid St',
@@ -84,55 +85,6 @@ class CheckOutView extends StatelessWidget {
       title,
       style: AppTextStyles.font14Medium.copyWith(
         color: LightAppColors.primary800,
-      ),
-    );
-  }
-
-  Widget _buildSelectionCard({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required bool showDropdown,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30.r),
-        border: Border.all(color: const Color(0xFF73B9BB), width: 1.5),
-      ),
-      child: Row(
-        children: [
-          SizedBox(
-            height: 60.h,
-            width: 100.w,
-            child: AppImages(imagePath: '/map.jpg'),
-          ),
-          12.w.pw,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF2C3E50),
-                  ),
-                ),
-                Text(
-                  subtitle,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFF666666),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (showDropdown)
-            const Icon(Icons.expand_more, color: Color(0xFFE91E63), size: 24),
-        ],
       ),
     );
   }
