@@ -169,7 +169,9 @@ class _LoginViewState extends State<LoginView> {
                         AuthSwitcherText(
                           normalText: "Don't have an account? ",
                           actionText: " Sign Up",
-                          onTap: login,
+                          onTap: () {
+                            AppNavigator.push(RegisterView());
+                          },
                         ),
                       ],
                     ),

@@ -5,6 +5,7 @@ import 'package:cosmetics/core/network/dio_helper.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
+import 'package:cosmetics/views/home/widgets/offers.dart';
 import 'package:cosmetics/views/home/widgets/top_rated_product_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,11 +18,33 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<Product> topRatedProducts = [];
   bool isLoading = true;
+  List<OfferModel> offers = [];
+  bool isOffersLoading = true;
 
   @override
   void initState() {
     super.initState();
     fetchTopRatedProducts();
+    fetchOffers();
+  }
+
+  Future<void> fetchOffers() async {
+    try {
+      final response = await DioHelper.get("/api/Sliders");
+      final List data = response.data;
+
+      setState(() {
+        offers = data.map((e) => OfferModel.fromJson(e)).toList();
+        isOffersLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isOffersLoading = false;
+      });
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Error loading offers")));
+    }
   }
 
   Future<void> fetchTopRatedProducts() async {
@@ -79,7 +102,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             12.h.ph,
-            AppImages(imagePath: '/poster.png'),
+            Offers(offers: offers, isLoading: isOffersLoading),
             12.h.ph,
             Text(
               'Top rated products',
@@ -154,5 +177,45 @@ class Product {
       imageUrl: json["imageUrl"],
       categoryId: json["categoryId"],
     );
+  }
+}
+
+class OfferModel {
+  final int id;
+  final String couponCode;
+  final int discountPercent;
+  final String descriptionTitle1;
+  final String descriptionTitle2;
+  final String imageUrl;
+
+  OfferModel({
+    required this.id,
+    required this.couponCode,
+    required this.discountPercent,
+    required this.descriptionTitle1,
+    required this.descriptionTitle2,
+    required this.imageUrl,
+  });
+
+  factory OfferModel.fromJson(Map<String, dynamic> json) {
+    return OfferModel(
+      id: json['id'] ?? 0,
+      couponCode: json['couponCode'] ?? '',
+      discountPercent: json['discountPercent'] ?? 0,
+      descriptionTitle1: json['descriptionTitle1'] ?? '',
+      descriptionTitle2: json['descriptionTitle2'] ?? '',
+      imageUrl: json['imageUrl'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'couponCode': couponCode,
+      'discountPercent': discountPercent,
+      'descriptionTitle1': descriptionTitle1,
+      'descriptionTitle2': descriptionTitle2,
+      'imageUrl': imageUrl,
+    };
   }
 }
