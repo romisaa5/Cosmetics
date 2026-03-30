@@ -32,8 +32,6 @@ class _RegisterViewState extends State<RegisterView> {
   final emailController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  bool isPasswordObscure = true;
-  bool isConfirmPasswordObscure = true;
   bool isLoading = false;
   String selectedCountryCode = "+20";
 
@@ -171,39 +169,14 @@ class _RegisterViewState extends State<RegisterView> {
                         AppInput(
                           labelText: 'Create your password',
                           controller: passwordContoller,
-                          isObscureText: isPasswordObscure,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              isPasswordObscure
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                isPasswordObscure = !isPasswordObscure;
-                              });
-                            },
-                          ),
+                          isObscureText: true,
                           validator: AppValidators.password,
                         ),
                         16.h.ph,
                         AppInput(
                           labelText: 'Confirm password',
                           controller: confirmPasswordController,
-                          isObscureText: isConfirmPasswordObscure,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              isConfirmPasswordObscure
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                isConfirmPasswordObscure =
-                                    !isConfirmPasswordObscure;
-                              });
-                            },
-                          ),
+                          isObscureText: true,
                           validator: (value) => AppValidators.confirmPassword(
                             value,
                             passwordContoller.text,

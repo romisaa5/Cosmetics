@@ -3,7 +3,7 @@ import 'package:cosmetics/core/common/widgets/app_images.dart';
 import 'package:cosmetics/core/helpers/extensions.dart';
 import 'package:cosmetics/core/theme/app_texts/app_text_styles.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
-import 'package:cosmetics/views/home/home.dart';
+import 'package:cosmetics/views/home/pages/home.dart';
 
 class Offers extends StatelessWidget {
   final List<OfferModel> offers;

@@ -1,10 +1,10 @@
 import 'package:cosmetics/core/common/widgets/app_images.dart';
 import 'package:cosmetics/core/theme/app_colors/light_app_colors.dart';
 import 'package:cosmetics/core/utils/common_imports.dart';
-import 'package:cosmetics/views/home/my_cart.dart';
-import 'package:cosmetics/views/home/categories.dart';
-import 'package:cosmetics/views/home/home.dart';
-import 'package:cosmetics/views/home/profile.dart';
+import 'package:cosmetics/views/home/pages/my_cart.dart';
+import 'package:cosmetics/views/home/pages/categories.dart';
+import 'package:cosmetics/views/home/pages/home.dart';
+import 'package:cosmetics/views/home/pages/profile.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class HomeView extends StatefulWidget {

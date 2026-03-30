@@ -29,7 +29,6 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   final phoneController = TextEditingController();
   final passwordContoller = TextEditingController();
-  bool isPasswordObscure = true;
   final formKey = GlobalKey<FormState>();
   String selectedCountryCode = "+20";
   bool isLoading = false;
@@ -130,19 +129,7 @@ class _LoginViewState extends State<LoginView> {
                         AppInput(
                           labelText: 'Create your password',
                           controller: passwordContoller,
-                          isObscureText: isPasswordObscure,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              isPasswordObscure
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                isPasswordObscure = !isPasswordObscure;
-                              });
-                            },
-                          ),
+                          isObscureText: true,
                           validator: AppValidators.password,
                         ),
                         CupertinoButton(
